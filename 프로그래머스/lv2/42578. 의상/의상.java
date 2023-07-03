@@ -18,8 +18,8 @@ class Solution {
         answer = 1;
         
         // 1개만 선택할 때부터 map.size() 개수만큼 선택할 때까지 모든 경우의 수 구함
-        for (String key : map.keySet()) {
-            answer *= map.get(key) + 1;
+        for (int key : map.values()) {
+            answer *= key + 1;
         }
         
         return answer - 1;        
