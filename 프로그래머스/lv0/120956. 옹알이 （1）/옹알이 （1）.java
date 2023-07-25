@@ -9,16 +9,9 @@ class Solution {
             babbling[i] = babbling[i].replaceAll("ye", " ");
             babbling[i] = babbling[i].replaceAll("woo", " ");
             babbling[i] = babbling[i].replaceAll("ma", " ");
+            babbling[i] = babbling[i].replaceAll(" ", "");
             
-            if (babbling[i].equals(" ")) answer++;
-            if (babbling[i].equals("  ")) answer++;
-            if (babbling[i].equals("   ")) answer++;
-            if (babbling[i].equals("    ")) answer++;
-            if (babbling[i].equals("     ")) answer++;
-            if (babbling[i].equals("      ")) answer++;
-            if (babbling[i].equals("       ")) answer++;
-            if (babbling[i].equals("        ")) answer++;
-            
+            if (babbling[i].equals("")) answer++;
         }
         
         return answer;
