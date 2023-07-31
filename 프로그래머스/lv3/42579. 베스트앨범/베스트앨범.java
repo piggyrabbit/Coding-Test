@@ -1,63 +1,77 @@
 import java.util.*;
 
-public class Solution {
-
-    static class Music{
-        String genre;
-        int play;
-        int idx;
-
-        public Music(String genre, int play, int idx) {
-            this.genre = genre;
-            this.play = play;
-            this.idx = idx;
-        }
-    }
-
+class Solution {
     public static int[] solution(String[] genres, int[] plays) {
+		// 해쉬맵으로 각 장르의 총 조회수 찾기
+		HashMap<String, Integer> map = new HashMap<>();
+		for (int i = 0; i < genres.length; i++) {
+			map.put(genres[i], map.getOrDefault(genres[i], 0) + plays[i]);
+		}
+		System.out.println(map);
 
-        HashMap<String, Integer> map = new HashMap<>();
-        for(int i=0; i<genres.length; i++){
-            map.put(genres[i], map.getOrDefault(genres[i], 0)+plays[i]);
-        }
+		// 조회수의 내림차순으로 키값 리스트에 저장
+		List<String> keySet = new ArrayList<>(map.keySet());
+		keySet.sort((o1, o2) -> map.get(o2).compareTo(map.get(o1)));
+		System.out.println(keySet);
 
-        // 1. 장르 선정
-        ArrayList<String> genres_ordered = new ArrayList<>();
-        while(map.size()!=0){
-            int max = -1;
-            String max_key = "";
-            for(String key : map.keySet()){
-                int tmp_cnt = map.get(key);
-                if(tmp_cnt>max){
-                    max = tmp_cnt;
-                    max_key = key;
-                }
-            }
-            genres_ordered.add(max_key);
-            map.remove(max_key);
-        }
-		
-        // 2. 장르 내 노래 선정
-        ArrayList<Music> result = new ArrayList<>();
-        for(String gern : genres_ordered){
-            ArrayList<Music> list = new ArrayList<>();
-            for(int i=0; i<genres.length; i++){
-                if(genres[i].equals(gern)){
-                    list.add(new Music(gern, plays[i], i));
-                }
-            }
-            Collections.sort(list, (o1, o2) -> o2.play - o1.play); // 내림차순 소팅
-            result.add(list.get(0)); 	// 1개는 무조건 수록
-            if(list.size()!=1){ 	// 더 수록할 곡이 있으면(==장르 내의 노래가 1개보다 많으면) 수록
-                result.add(list.get(1));
-            }
-        }
-        
-        // print result
-        int[] answer = new int[result.size()];
-        for(int i=0; i<result.size(); i++){
-            answer[i] = result.get(i).idx;
-        }
-        return answer;
-    }
+		// 총조회수가 큰값부터 상위 두개 인덱스 값 저장(1개면 하나만 저장)
+		int max1 = 0;
+		int max2 = 0;
+		List<Integer> result = new ArrayList<>();
+		for (String str : keySet) {
+			List<Integer> list = new ArrayList<>();
+			for (int i = 0; i < genres.length; i++) {
+				if (genres[i].equals(str)) {
+					list.add(plays[i]);
+				}
+			}
+			Collections.sort(list, Collections.reverseOrder());
+			System.out.println(list);
+
+			if (list.size() > 1) {
+				max1 = list.get(0);
+				max2 = list.get(1);
+				System.out.println("max1:" + max1);
+				System.out.println("max2:" + max2);
+
+				int temp = 0;
+				for (int i = 0; i < plays.length; i++) {
+					if (str.equals(genres[i])) {
+						if (max1 == plays[i]) {
+							temp = i;
+							result.add(i);
+							break;
+						}
+					}
+				}
+				System.out.println(temp);
+				System.out.println(result);
+
+				for (int i = 0; i < plays.length; i++) {
+					if (str.equals(genres[i])) {
+						if (max2 == plays[i] && i != temp) {
+							result.add(i);
+							break;
+						}
+					}
+				}
+
+				System.out.println(result);
+			} else {
+				max1 = list.get(0);
+				for (int i = 0; i < plays.length; i++) {
+					if (max1 == plays[i]) {
+						result.add(i);
+					}
+				}
+			}
+		}
+
+		int[] answer = new int[result.size()];
+
+		for (int i = 0; i < answer.length; i++) {
+			answer[i] = result.get(i);
+		}
+		return answer;
+	}
 }
